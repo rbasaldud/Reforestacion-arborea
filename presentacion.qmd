@@ -31,9 +31,9 @@ Usando el dataset `Dune`
 <h3>Autores</h3>
 
 <ul style="font-size: 1.2em;">
-  <li>Basaldud Rodrigo</li>
-  <li>Artista Lizbeth</li>
-  <li>Noémi Rodríguez</li>
+  <li>Rodrigo Basaldud</li>
+  <li>Lizbeth Artista</li>
+  <li>Seani Rodríguez</li>
 </ul>
 
 <br>
