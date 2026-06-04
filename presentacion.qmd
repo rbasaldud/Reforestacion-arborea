@@ -4,7 +4,7 @@ format:
     theme: ["theme/q-theme.scss"]
     logo: "imagenes/escudoFC.png"
     slide-number: c/t
-    footer: "Modelos Lineales semestre 2026-II"
+    footer: "Facultad de Ciencias, UNAM"
     transition: fade
     background-transition: fade
     center-title-slide: false
@@ -18,12 +18,12 @@ execute:
 ---
 
 <h1>
-<b>Cuando el análisis multivariado y los modelos lineales compiten:</b><br>
-<b>CCA vs Regresión Logística</b>
+<b>Reforestación forestal: `¿Entender a una especie o a un ecosistema?`</b><br>
+<b></b>
 </h1>
 
 <h2>
-Usando el dataset `Dune`
+Una comparativa entre la `regresión logística` y `CCA`
 </h2>
 
 <hr>
@@ -44,49 +44,9 @@ Usando el dataset `Dune`
 ![](imagenes/bosque.jpg){.absolute top=500 left=1400 width="600"}
 
 
+# Motivación
 
-# Borrador de presentacion
-
-Este es un primer borrador de la **presentacion** 
-
- <br>
-
-::: {.fragment}
-> La Regresion logistica es [`Aburrida`]{.fragment}
-
-:::
-
-<br> 
-
-::: {.fragment}
-$$
-logit(p) = X \underline{\beta}
-$$
-
-:::
-
-::: {.fragment}
-> `Y todavia falta hacerla Bayesiana`
-:::
-
-
-# PCA en 5 minutos?
-
-<br>
-<br>
-
-A Pepe le gustaria esto     
-
-<br>
-
-
-[**O no?**]{.fragment}
-
-
-
-# Motivación: `Restauración forestal en México`
-
-Supongamos que la Comisión Nacional Forestal (CONAFOR) desea identificar qué especies arbóreas tienen mayor probabilidad de establecerse en distintas regiones del país para apoyar diferentes programas de reforestación y restauración ecológica.
+Supongamos que la Comisión Nacional Forestal (CONAFOR) desea identificar qué especies de arboles tienen mayor probabilidad de establecerse en distintas regiones del país para apoyar diferentes programas de reforestación y restauración ecológica.
 
 ::: {.fragment}
 Se cuenta con información de cientos de sitios distribuidos en bosques templados del centro de México, donde se registró:
@@ -103,28 +63,144 @@ Se cuenta con información de cientos de sitios distribuidos en bosques templado
 
 Además, para cada sitio se registró la presencia o ausencia de especies como:
 
-- *Pinus montezumae*
-- *Pinus hartwegii*
-- *Quercus rugosa*
-- *Quercus laurina*
-- *Alnus acuminata*
+<div style="
+display:grid;
+grid-template-columns: 1fr 1fr;
+grid-template-rows: 1fr 1fr;
+gap:40px;
+width:90%;
+margin:auto;
+margin-top:40px;
+">
+
+<div class="fragment" style="text-align:center;">
+<img src="imagenes/pino_moctezuma.jpg" width="450">
+<p><b><i>Pinus montezumae</i></b></p>
+</div>
+
+<div class="fragment" style="text-align:center;">
+<img src="imagenes/hartwegii.jpg" width="450">
+<p><b><i>Pinus hartwegii</i></b></p>
+</div>
+
+<div class="fragment" style="text-align:center;">
+<img src="imagenes/quercus.jpg" width="450">
+<p><b><i>Quercus rugosa</i></b></p>
+</div>
+
+<div class="fragment" style="text-align:center;">
+<img src="imagenes/laurina.jpg" width="450">
+<p><b><i>Quercus laurina</i></b></p>
+</div>
+
+</div>
 
 
+---
 
-
-
-# La pregunta de investigación
-
-Antes de plantar árboles, surge una pregunta fundamental:
+<br>
+Una pregunta inmediata antes de comenzar a plantar podría ser:
+<br>
+<br>
 
 ::: {.fragment}
-**¿Qué especies tienen mayor probabilidad de sobrevivir y establecerse bajo las condiciones ambientales del sitio específico?**
+**Dadas unas condiciones ambientales específicas, ¿Qué especies pueden establecerse con mayor facilidad?**
+:::
+
+<br>
+<br>
+
+::: {.fragment}
+Aparentemente podríamos identificar especies que son típicas de climas o regiones específicas, y con base en ese conocimiento comenzar con el programa de reforestación.
+:::
+
+
+# ¿Cuál es la dificultad de este problema?
+
+<br>
+Hay una relación de dependencia entre especies que no se debe ignorar, además en países megadiversos como México, pueden existir distintos ecosistemas en regiones "cercanas".
+
+<br>
+
+::: {.fragment}
+Por ejemplo:
+
+* Algunas especies tienden a compartir ambientes similares (p.ej. especies de alta montaña).
+
+* La presencia de una especie puede influir en la presencia de otra (p.ej. especies que compiten por recursos o que tienen relaciones de facilitación).
+
+* Estados como Oaxaca tienen una gran diversidad de ecosistemas, y analizar un ecosistema a la vez puede perder de vista el panoráma completo.
+:::
+
+
+
+
+---
+
+<br>
+He aquí el dilema que motiva esta presentación:
+<br>
+<br>
+
+::: {.fragment}
+>**Si el objetivo es predecir la presencia de especies arbóreas en los bosques mexicanos, ¿es preferible construir un modelo específico para cada especie o un modelo que contemple la biodiversidad de un ecosistema?**
+:::
+
+<br>
+
+
+::: {.fragment}
+Afortunadamente, es una discución que ya se ha hecho...
+:::
+
+---
+
+::: {.fragment}
+
+>Esta misma cuestión fue estudiada por Guisan, Weiss y Weiss (1999), quienes compararon un GLM (regresión logística) y CCA para la predicción de distribuciones de plantas.
+:::
+
+<br>
+
+::: {.fragment}
+
+<div style="
+text-align:center;
+margin-top:30px;
+">
+
+<img src="imagenes/paper.png"
+style="
+width:80%;
+border:3px solid #444;
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+padding:8px;
+background:white;
+">
+
+</div>
+:::
+
+---
+<br>
+
+Hay dos detalles importantes:
+
+<br>
+
+::: {.fragment}
+* Si bien, el título suguiere una competencia entre modelos, en realidad la discución es acerca cuándo conviene escoger cada enfoque. 
 :::
 
 ::: {.fragment}
-La intuición sugiere que se deben usar modelos que relacionen la presencia de cada especie con las variables ambientales, sin embargo existen dos enfoques.
+* No tiene por qué limitarse a comparar un GLM (regresión logística) contra CCA, sin embargo la regresión logística es un modelo cómodo y el CCA nace naturalmente en el contexto de la ecología.
 :::
 
+<br>
+
+::: {.fragment}
+A continuación, introducciremos ambos enfoques y sus modelos.
+:::
 
 # Enfoque 1: Especie por especie 
 
@@ -132,9 +208,13 @@ La intuición sugiere que se deben usar modelos que relacionen la presencia de c
 
 Un técnico forestal podría argumentar:
 
+<br>
+
 ::: {.fragment}
 > "*Pinus hartwegii* no responde al ambiente de la misma forma que *Quercus rugosa*. Cada especie debe estudiarse individualmente."
 :::
+
+<br>
 
 ::: {.fragment}
 Entonces se ajusta un modelo para cada especie:
@@ -145,76 +225,7 @@ Entonces se ajusta un modelo para cada especie:
 - Etc.
 :::
 
-::: {.fragment}
-Cada modelo selecciona las variables ambientales que mejor explican la presencia de esa especie.
-:::
-
-
-
-# Enfoque 2: Ecosistema como un todo
-
-<br>
-Un ecólogo de comunidades podría responder:
-<br>
-
-::: {.fragment}
-> "Los bosques mexicanos son ecosistemas complejos. Las especies no aparecen de manera aislada, sino que coexisten y hay una relación de entre ellas."
-:::
-<br>
-
-::: {.fragment}
-Por ejemplo:
-
-- Las especies de alta montaña tienden a aparecer juntas.
-- Las especies asociadas a ambientes húmedos suelen coexistir.
-- Los encinos y pinos responden simultáneamente a climas con mucha precipitación.
-:::
-
-::: {.fragment}
-Desde esta perspectiva, se busca un modelo que logre capturar las relaciones entre las especies y su respuesta conjunta al ambiente.
-:::
-
-
-
-
-
-# El dilema
-<br>
-
-He aquí el dilema que motiva esta presentación:
-
-<br>
-
-::: {.fragment}
->**Si el objetivo es predecir la presencia de especies arbóreas en los bosques mexicanos, ¿es mejor construir un modelo específico para cada especie o aprovechar la información compartida por toda la comunidad vegetal?**
-:::
-
-::: {.fragment}
-Esta discución fue inspirada por el articulo:
-
->Guisan, A., Weiss, S.B. & Weiss, A.D. GLM versus CCA spatial modeling of plant species distribution. Plant Ecology 143, 107–122 (1999). https://doi.org/10.1023/A:1009841519580
-:::
-
-
-
-
-# Propuesta
-
-::: {.fragment}
-**Enfoque 1:** Modelar cada especie de manera independiente mediante regresión logística.
-:::
-
-::: {.fragment}
-**Enfoque 2:** Modelar simultáneamente toda la comunidad mediante análisis de correspondencias canónicas (CCA).
-:::
-
-::: {.fragment}
-Objetivo:
-
-Evaluar cuál de estas estrategias proporciona una mejor capacidad predictiva para la presencia de especies arbóreas en bosques templados mexicanos.
-:::
-
-# Una modelo conocido: `Regresión Logística`
+# Un modelo conocido: `Regresión Logística`
 <br>
 
 Motivación vinculada con el ejemplo, teoría y ecuación de la regresión logística.
@@ -247,6 +258,32 @@ ggplot(data.frame(x, p), aes(x, p)) +
   ) +
   theme_minimal(base_size = 14)
 ```
+
+
+
+# Enfoque 2: Ecosistema como un todo
+
+<br>
+Un ecólogo podría responder:
+<br>
+
+::: {.fragment}
+> "Los bosques mexicanos son ecosistemas complejos. Las especies no aparecen de manera aislada, sino que coexisten y hay una relación de entre ellas."
+:::
+<br>
+
+::: {.fragment}
+Desde esta perspectiva, se busca un modelo que logre capturar las relaciones entre las especies y su respuesta conjunta al ambiente.
+:::
+
+::: {.fragment}
+Esto permite modelar:
+
+- Varios ecosistemas de una misma región.
+- Encontrar gradientes ambientales en común para distintas especies.
+
+:::
+
 
 # `Análisis de correspondencias ... ¿canónicas?` 
 
