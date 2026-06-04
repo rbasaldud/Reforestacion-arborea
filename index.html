@@ -97,7 +97,7 @@
     code span.vs { color: #008000; } /* VerbatimString */
     code span.wa { color: #696969; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="presentacion_files/libs/revealjs/dist/theme/quarto-58ee52226f0e8da651552bcb03fa90f2.css">
+  <link rel="stylesheet" href="presentacion_files/libs/revealjs/dist/theme/quarto-8cc07d42c4df1d638ac15e0da96458c9.css">
   <link href="presentacion_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="presentacion_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="presentacion_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -198,10 +198,10 @@
 <section class="slide level2">
 
 <h1>
-<b>Cuando el análisis multivariado y los modelos lineales compiten:</b><br> <b>CCA vs Regresión Logística</b>
+<b>Reforestación forestal: <code>¿Entender a una especie o a un ecosistema?</code></b><br> <b></b>
 </h1>
 <h2>
-Usando el dataset <code>Dune</code>
+Una comparativa entre la <code>regresión logística</code> y <code>CCA</code>
 </h2>
 <hr>
 <h3>
@@ -224,40 +224,10 @@ Junio 2026
 </h3>
 <p><img data-src="imagenes/bosque.jpg" class="absolute" style="top: 500px; left: 1400px; width: 600px; "></p>
 </section>
-<section id="borrador-de-presentacion" class="title-slide slide level1">
-<h1>Borrador de presentacion</h1>
-<p>Este es un primer borrador de la <strong>presentacion</strong></p>
-<p><br></p>
-<div class="fragment">
-<blockquote>
-<p>La Regresion logistica es <span class="fragment"><code>Aburrida</code></span></p>
-</blockquote>
-</div>
-<p><br></p>
-<div class="fragment">
-<p><span class="math display">\[
-logit(p) = X \underline{\beta}
-\]</span></p>
-</div>
-<div class="fragment">
-<blockquote>
-<p><code>Y todavia falta hacerla Bayesiana</code></p>
-</blockquote>
-</div>
-</section>
-
-<section id="pca-en-5-minutos" class="title-slide slide level1">
-<h1>PCA en 5 minutos?</h1>
-<p><br> <br></p>
-<p>A Pepe le gustaria esto</p>
-<p><br></p>
-<p><span class="fragment"><strong>O no?</strong></span></p>
-</section>
-
 <section>
-<section id="motivación-restauración-forestal-en-méxico" class="title-slide slide level1">
-<h1>Motivación: <code>Restauración forestal en México</code></h1>
-<p>Supongamos que la Comisión Nacional Forestal (CONAFOR) desea identificar qué especies arbóreas tienen mayor probabilidad de establecerse en distintas regiones del país para apoyar diferentes programas de reforestación y restauración ecológica.</p>
+<section id="motivación" class="title-slide slide level1">
+<h1>Motivación</h1>
+<p>Supongamos que la Comisión Nacional Forestal (CONAFOR) desea identificar qué especies de arboles tienen mayor probabilidad de establecerse en distintas regiones del país para apoyar diferentes programas de reforestación y restauración ecológica.</p>
 <div class="fragment">
 <p>Se cuenta con información de cientos de sitios distribuidos en bosques templados del centro de México, donde se registró:</p>
 <ul>
@@ -272,34 +242,133 @@ logit(p) = X \underline{\beta}
 <section class="slide level2">
 
 <p>Además, para cada sitio se registró la presencia o ausencia de especies como:</p>
-<ul>
-<li><em>Pinus montezumae</em></li>
-<li><em>Pinus hartwegii</em></li>
-<li><em>Quercus rugosa</em></li>
-<li><em>Quercus laurina</em></li>
-<li><em>Alnus acuminata</em></li>
-</ul>
-</section></section>
-<section id="la-pregunta-de-investigación" class="title-slide slide level1">
-<h1>La pregunta de investigación</h1>
-<p>Antes de plantar árboles, surge una pregunta fundamental:</p>
-<div class="fragment">
-<p><strong>¿Qué especies tienen mayor probabilidad de sobrevivir y establecerse bajo las condiciones ambientales del sitio específico?</strong></p>
+<div style="
+display:grid;
+grid-template-columns: 1fr 1fr;
+grid-template-rows: 1fr 1fr;
+gap:40px;
+width:90%;
+margin:auto;
+margin-top:40px;
+">
+<div class="fragment" style="text-align:center;">
+<img src="imagenes/pino_moctezuma.jpg" width="450">
+<p>
+<b><i>Pinus montezumae</i></b>
+</p>
 </div>
-<div class="fragment">
-<p>La intuición sugiere que se deben usar modelos que relacionen la presencia de cada especie con las variables ambientales, sin embargo existen dos enfoques.</p>
+<div class="fragment" style="text-align:center;">
+<img src="imagenes/hartwegii.jpg" width="450">
+<p>
+<b><i>Pinus hartwegii</i></b>
+</p>
+</div>
+<div class="fragment" style="text-align:center;">
+<img src="imagenes/quercus.jpg" width="450">
+<p>
+<b><i>Quercus rugosa</i></b>
+</p>
+</div>
+<div class="fragment" style="text-align:center;">
+<img src="imagenes/laurina.jpg" width="450">
+<p>
+<b><i>Quercus laurina</i></b>
+</p>
+</div>
 </div>
 </section>
+<section class="slide level2">
 
+<p><br> Una pregunta inmediata antes de comenzar a plantar podría ser: <br> <br></p>
+<div class="fragment">
+<p><strong>Dadas unas condiciones ambientales específicas, ¿Qué especies pueden establecerse con mayor facilidad?</strong></p>
+</div>
+<p><br> <br></p>
+<div class="fragment">
+<p>Aparentemente podríamos identificar especies que son típicas de climas o regiones específicas, y con base en ese conocimiento comenzar con el programa de reforestación.</p>
+</div>
+</section></section>
+<section>
+<section id="cuál-es-la-dificultad-de-este-problema" class="title-slide slide level1">
+<h1>¿Cuál es la dificultad de este problema?</h1>
+<p><br> Hay una relación de dependencia entre especies que no se debe ignorar, además en países megadiversos como México, pueden existir distintos ecosistemas en regiones “cercanas”.</p>
+<p><br></p>
+<div class="fragment">
+<p>Por ejemplo:</p>
+<ul>
+<li><p>Algunas especies tienden a compartir ambientes similares (p.ej. especies de alta montaña).</p></li>
+<li><p>La presencia de una especie puede influir en la presencia de otra (p.ej. especies que compiten por recursos o que tienen relaciones de facilitación).</p></li>
+<li><p>Estados como Oaxaca tienen una gran diversidad de ecosistemas, y analizar un ecosistema a la vez puede perder de vista el panoráma completo.</p></li>
+</ul>
+</div>
+</section>
+<section class="slide level2">
+
+<p><br> He aquí el dilema que motiva esta presentación: <br> <br></p>
+<div class="fragment">
+<blockquote>
+<p><strong>Si el objetivo es predecir la presencia de especies arbóreas en los bosques mexicanos, ¿es preferible construir un modelo específico para cada especie o un modelo que contemple la biodiversidad de un ecosistema?</strong></p>
+</blockquote>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Afortunadamente, es una discución que ya se ha hecho…</p>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="fragment">
+<blockquote>
+<p>Esta misma cuestión fue estudiada por Guisan, Weiss y Weiss (1999), quienes compararon un GLM (regresión logística) y CCA para la predicción de distribuciones de plantas.</p>
+</blockquote>
+</div>
+<p><br></p>
+<div class="fragment">
+<div style="
+text-align:center;
+margin-top:30px;
+">
+<p><img src="imagenes/paper.png" style="
+width:80%;
+border:3px solid #444;
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+padding:8px;
+background:white;
+"></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p><br></p>
+<p>Hay dos detalles importantes:</p>
+<p><br></p>
+<div class="fragment">
+<ul>
+<li>Si bien, el título suguiere una competencia entre modelos, en realidad la discución es acerca cuándo conviene escoger cada enfoque.</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li>No tiene por qué limitarse a comparar un GLM (regresión logística) contra CCA, sin embargo la regresión logística es un modelo cómodo y el CCA nace naturalmente en el contexto de la ecología.</li>
+</ul>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>A continuación, introducciremos ambos enfoques y sus modelos.</p>
+</div>
+</section></section>
 <section id="enfoque-1-especie-por-especie" class="title-slide slide level1">
 <h1>Enfoque 1: Especie por especie</h1>
 <p><br></p>
 <p>Un técnico forestal podría argumentar:</p>
+<p><br></p>
 <div class="fragment">
 <blockquote>
 <p>“<em>Pinus hartwegii</em> no responde al ambiente de la misma forma que <em>Quercus rugosa</em>. Cada especie debe estudiarse individualmente.”</p>
 </blockquote>
 </div>
+<p><br></p>
 <div class="fragment">
 <p>Entonces se ajusta un modelo para cada especie:</p>
 <ul>
@@ -309,14 +378,169 @@ logit(p) = X \underline{\beta}
 <li>Etc.</li>
 </ul>
 </div>
+</section>
+
+<section>
+<section id="un-modelo-conocido-regresión-logística" class="title-slide slide level1">
+<h1>Un modelo conocido: <code>Regresión Logística</code></h1>
+<p><br></p>
+<p>Para una especie particular, por ejemplo <em>Pinus hartwegii</em>, cada sitio puede clasificarse como:</p>
+<p><br></p>
 <div class="fragment">
-<p>Cada modelo selecciona las variables ambientales que mejor explican la presencia de esa especie.</p>
+<ul>
+<li>Presencia (<span class="math inline">\(Y=1\)</span>)</li>
+<li>Ausencia (<span class="math inline">\(Y=0\)</span>)</li>
+</ul>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>La pregunta ahora es:</p>
+<blockquote>
+<p>¿Cómo cambia la probabilidad de presencia de la especie cuando cambian las condiciones ambientales?</p>
+</blockquote>
+</div>
+<p><br></p>
+</section>
+<section class="slide level2">
+
+<div class="fragment">
+<p>Por ejemplo:</p>
+<ul>
+<li>¿La probabilidad aumenta con la altitud?</li>
+<li>¿Disminuye cuando la temperatura es muy alta?</li>
+<li>¿Existe una combinación favorable de precipitación y pH?</li>
+</ul>
+</div>
+</section>
+<section class="slide level2">
+
+<p><br></p>
+<p>Supongamos que observamos cientos de sitios y para cada uno conocemos su altitud, temperatura, precipitación, pH, así como si la especie estuvo presente o ausente.</p>
+<p><br></p>
+<div class="fragment">
+<p>La regresión logística intenta aprender una relación entre:</p>
+<p><span class="math display">\[
+\text{Condiciones ambientales}
+\longrightarrow
+\mathbb{P}(\text{Presencia})
+\]</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<p><br></p>
+<p>La regresión logística modela la probabilidad de presencia mediante</p>
+<p><span class="math display">\[
+P(Y=1\mid X)=
+\frac{e^{\eta}}
+{1+e^{\eta}}
+\]</span></p>
+<p><br></p>
+<div class="fragment">
+<p>donde</p>
+<p><span class="math display">\[
+\eta=
+\beta_0+
+\beta_1x_1+
+\beta_2x_2+
+\cdots+
+\beta_px_p
+\]</span></p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>y las variables <span class="math inline">\(x_1,\ldots,x_p\)</span> representan las características ambientales del sitio.</p>
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="interpretación-ecológica" class="title-slide slide level1">
+<h1>Interpretación ecológica</h1>
+<p><br></p>
+<div class="fragment">
+<p>Cada coeficiente describe cómo una variable ambiental afecta la probabilidad de presencia de la especie.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Por ejemplo:</p>
+<ul>
+<li><span class="math inline">\(\beta_{\text{altitud}}&gt;0\)</span> podría indicar preferencia por zonas altas.</li>
+<li><span class="math inline">\(\beta_{\text{temperatura}}&lt;0\)</span> podría indicar preferencia por ambientes fríos.</li>
+<li><span class="math inline">\(\beta_{\text{precipitación}}&gt;0\)</span> podría indicar afinidad por sitios húmedos.</li>
+</ul>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>De esta manera, cada especie obtiene su propia descripción estadística de su nicho ecológico.</p>
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="de-variables-ambientales-a-probabilidades" class="title-slide slide level1">
+<h1>De variables ambientales a probabilidades</h1>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="fragment">
+<p>La función logística transforma cualquier combinación de variables ambientales en una probabilidad entre 0 y 1.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Esto permite interpretar directamente el resultado del modelo:</p>
+<ul>
+<li>Valores cercanos a 0 indican baja probabilidad de presencia.</li>
+<li>Valores cercanos a 1 indican alta probabilidad de presencia.</li>
+<li>Valores intermedios reflejan incertidumbre.</li>
+</ul>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Por ejemplo, un sitio con gran altitud podría recibir una probabilidad alta para la presencia de <em>Pinus hartwegii</em>.</p>
+</div>
+</div><div class="column" style="width:45%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentacion_files/figure-revealjs/logit-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section id="evaluación-predictiva" class="title-slide slide level1">
+<h1>Evaluación predictiva</h1>
+<p><br></p>
+<div class="fragment">
+<p>Una ventaja importante de este enfoque es que la variable respuesta es binaria, es decir <span class="math inline">\(Y \in \{0,1\}\)</span></p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Por lo tanto, las probabilidades estimadas pueden transformarse en predicciones de presencia o ausencia mediante un umbral.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Esto permite utilizar métricas de desempeño predictivo como:</p>
+<ul>
+<li>Accuracy.</li>
+<li>Sensibilidad.</li>
+<li>Especificidad.</li>
+<li>Curvas ROC.</li>
+<li>AUC.</li>
+</ul>
 </div>
 </section>
 
 <section id="enfoque-2-ecosistema-como-un-todo" class="title-slide slide level1">
 <h1>Enfoque 2: Ecosistema como un todo</h1>
-<p><br> Un ecólogo de comunidades podría responder: <br></p>
+<p><br> Un ecólogo podría responder: <br></p>
 <div class="fragment">
 <blockquote>
 <p>“Los bosques mexicanos son ecosistemas complejos. Las especies no aparecen de manera aislada, sino que coexisten y hay una relación de entre ellas.”</p>
@@ -324,66 +548,16 @@ logit(p) = X \underline{\beta}
 </div>
 <p><br></p>
 <div class="fragment">
-<p>Por ejemplo:</p>
-<ul>
-<li>Las especies de alta montaña tienden a aparecer juntas.</li>
-<li>Las especies asociadas a ambientes húmedos suelen coexistir.</li>
-<li>Los encinos y pinos responden simultáneamente a climas con mucha precipitación.</li>
-</ul>
-</div>
-<div class="fragment">
 <p>Desde esta perspectiva, se busca un modelo que logre capturar las relaciones entre las especies y su respuesta conjunta al ambiente.</p>
 </div>
-</section>
-
-<section id="el-dilema" class="title-slide slide level1">
-<h1>El dilema</h1>
-<p><br></p>
-<p>He aquí el dilema que motiva esta presentación:</p>
-<p><br></p>
 <div class="fragment">
-<blockquote>
-<p><strong>Si el objetivo es predecir la presencia de especies arbóreas en los bosques mexicanos, ¿es mejor construir un modelo específico para cada especie o aprovechar la información compartida por toda la comunidad vegetal?</strong></p>
-</blockquote>
-</div>
-<div class="fragment">
-<p>Esta discución fue inspirada por el articulo:</p>
-<blockquote>
-<p>Guisan, A., Weiss, S.B. &amp; Weiss, A.D. GLM versus CCA spatial modeling of plant species distribution. Plant Ecology 143, 107–122 (1999). https://doi.org/10.1023/A:1009841519580</p>
-</blockquote>
+<p>Esto permite modelar:</p>
+<ul>
+<li>Varios ecosistemas de una misma región.</li>
+<li>Encontrar gradientes ambientales en común para distintas especies.</li>
+</ul>
 </div>
 </section>
-
-<section id="propuesta" class="title-slide slide level1">
-<h1>Propuesta</h1>
-<div class="fragment">
-<p><strong>Enfoque 1:</strong> Modelar cada especie de manera independiente mediante regresión logística.</p>
-</div>
-<div class="fragment">
-<p><strong>Enfoque 2:</strong> Modelar simultáneamente toda la comunidad mediante análisis de correspondencias canónicas (CCA).</p>
-</div>
-<div class="fragment">
-<p>Objetivo:</p>
-<p>Evaluar cuál de estas estrategias proporciona una mejor capacidad predictiva para la presencia de especies arbóreas en bosques templados mexicanos.</p>
-</div>
-</section>
-
-<section id="una-modelo-conocido-regresión-logística" class="title-slide slide level1">
-<h1>Una modelo conocido: <code>Regresión Logística</code></h1>
-<p><br></p>
-<p>Motivación vinculada con el ejemplo, teoría y ecuación de la regresión logística.</p>
-<p><span class="math display">\[
-logit(p) = X \underline{\beta}
-\]</span></p>
-<p><span class="math display">\[
-p = \frac{1}{1 + e^{-X \underline{\beta}}}
-\]</span></p>
-</section>
-
-<section id="grafica-reg-log" class="title-slide slide level1">
-<h1>Grafica reg log</h1>
-
-<img data-src="presentacion_files/figure-revealjs/logit-1.png" width="960" class="r-stretch"></section>
 
 <section id="análisis-de-correspondencias-...-canónicas" class="title-slide slide level1">
 <h1><code>Análisis de correspondencias ... ¿canónicas?</code></h1>
@@ -578,7 +752,7 @@ justify-items:center;
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="imagenes/escudoFC.png" class="slide-logo"></p>
 <div class="footer footer-default">
-<p>Modelos Lineales semestre 2026-II</p>
+<p>Facultad de Ciencias, UNAM</p>
 </div>
 </div></div>
 
