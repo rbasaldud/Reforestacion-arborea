@@ -380,22 +380,163 @@ background:white;
 </div>
 </section>
 
+<section>
 <section id="un-modelo-conocido-regresión-logística" class="title-slide slide level1">
 <h1>Un modelo conocido: <code>Regresión Logística</code></h1>
 <p><br></p>
-<p>Motivación vinculada con el ejemplo, teoría y ecuación de la regresión logística.</p>
-<p><span class="math display">\[
-logit(p) = X \underline{\beta}
-\]</span></p>
-<p><span class="math display">\[
-p = \frac{1}{1 + e^{-X \underline{\beta}}}
-\]</span></p>
+<p>Para una especie particular, por ejemplo <em>Pinus hartwegii</em>, cada sitio puede clasificarse como:</p>
+<p><br></p>
+<div class="fragment">
+<ul>
+<li>Presencia (<span class="math inline">\(Y=1\)</span>)</li>
+<li>Ausencia (<span class="math inline">\(Y=0\)</span>)</li>
+</ul>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>La pregunta ahora es:</p>
+<blockquote>
+<p>¿Cómo cambia la probabilidad de presencia de la especie cuando cambian las condiciones ambientales?</p>
+</blockquote>
+</div>
+<p><br></p>
 </section>
+<section class="slide level2">
 
-<section id="grafica-reg-log" class="title-slide slide level1">
-<h1>Grafica reg log</h1>
+<div class="fragment">
+<p>Por ejemplo:</p>
+<ul>
+<li>¿La probabilidad aumenta con la altitud?</li>
+<li>¿Disminuye cuando la temperatura es muy alta?</li>
+<li>¿Existe una combinación favorable de precipitación y pH?</li>
+</ul>
+</div>
+</section>
+<section class="slide level2">
 
-<img data-src="presentacion_files/figure-revealjs/logit-1.png" width="960" class="r-stretch"></section>
+<p><br></p>
+<p>Supongamos que observamos cientos de sitios y para cada uno conocemos su altitud, temperatura, precipitación, pH, así como si la especie estuvo presente o ausente.</p>
+<p><br></p>
+<div class="fragment">
+<p>La regresión logística intenta aprender una relación entre:</p>
+<p><span class="math display">\[
+\text{Condiciones ambientales}
+\longrightarrow
+\mathbb{P}(\text{Presencia})
+\]</span></p>
+</div>
+</section>
+<section class="slide level2">
+
+<p><br></p>
+<p>La regresión logística modela la probabilidad de presencia mediante</p>
+<p><span class="math display">\[
+P(Y=1\mid X)=
+\frac{e^{\eta}}
+{1+e^{\eta}}
+\]</span></p>
+<p><br></p>
+<div class="fragment">
+<p>donde</p>
+<p><span class="math display">\[
+\eta=
+\beta_0+
+\beta_1x_1+
+\beta_2x_2+
+\cdots+
+\beta_px_p
+\]</span></p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>y las variables <span class="math inline">\(x_1,\ldots,x_p\)</span> representan las características ambientales del sitio.</p>
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="interpretación-ecológica" class="title-slide slide level1">
+<h1>Interpretación ecológica</h1>
+<p><br></p>
+<div class="fragment">
+<p>Cada coeficiente describe cómo una variable ambiental afecta la probabilidad de presencia de la especie.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Por ejemplo:</p>
+<ul>
+<li><span class="math inline">\(\beta_{\text{altitud}}&gt;0\)</span> podría indicar preferencia por zonas altas.</li>
+<li><span class="math inline">\(\beta_{\text{temperatura}}&lt;0\)</span> podría indicar preferencia por ambientes fríos.</li>
+<li><span class="math inline">\(\beta_{\text{precipitación}}&gt;0\)</span> podría indicar afinidad por sitios húmedos.</li>
+</ul>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>De esta manera, cada especie obtiene su propia descripción estadística de su nicho ecológico.</p>
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="de-variables-ambientales-a-probabilidades" class="title-slide slide level1">
+<h1>De variables ambientales a probabilidades</h1>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="fragment">
+<p>La función logística transforma cualquier combinación de variables ambientales en una probabilidad entre 0 y 1.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Esto permite interpretar directamente el resultado del modelo:</p>
+<ul>
+<li>Valores cercanos a 0 indican baja probabilidad de presencia.</li>
+<li>Valores cercanos a 1 indican alta probabilidad de presencia.</li>
+<li>Valores intermedios reflejan incertidumbre.</li>
+</ul>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Por ejemplo, un sitio con gran altitud y baja temperatura podría recibir una probabilidad alta para la presencia de <em>Pinus hartwegii</em>.</p>
+</div>
+</div><div class="column" data-top="700" style="width:45%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentacion_files/figure-revealjs/logit-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section id="evaluación-predictiva" class="title-slide slide level1">
+<h1>Evaluación predictiva</h1>
+<p><br></p>
+<div class="fragment">
+<p>Una ventaja importante de este enfoque es que la variable respuesta es binaria, es decir <span class="math inline">\(Y \in \{0,1\}\)</span></p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Por lo tanto, las probabilidades estimadas pueden transformarse en predicciones de presencia o ausencia mediante un umbral.</p>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>Esto permite utilizar métricas de desempeño predictivo como:</p>
+<ul>
+<li>Accuracy.</li>
+<li>Sensibilidad.</li>
+<li>Especificidad.</li>
+<li>Curvas ROC.</li>
+<li>AUC.</li>
+</ul>
+</div>
+</section>
 
 <section id="enfoque-2-ecosistema-como-un-todo" class="title-slide slide level1">
 <h1>Enfoque 2: Ecosistema como un todo</h1>

@@ -182,6 +182,7 @@ background:white;
 :::
 
 ---
+
 <br>
 
 Hay dos detalles importantes:
@@ -226,21 +227,148 @@ Entonces se ajusta un modelo para cada especie:
 :::
 
 # Un modelo conocido: `Regresión Logística`
+
 <br>
 
-Motivación vinculada con el ejemplo, teoría y ecuación de la regresión logística.
+Para una especie particular, por ejemplo *Pinus hartwegii*, cada sitio puede clasificarse como:
+
+<br>
+
+::: {.fragment}
+- Presencia ($Y=1$)
+- Ausencia ($Y=0$)
+:::
+
+<br>
+
+::: {.fragment}
+La pregunta ahora es:
+
+> ¿Cómo cambia la probabilidad de presencia de la especie cuando cambian las condiciones ambientales?
+:::
+
+<br>
+
+---
+
+::: {.fragment}
+Por ejemplo:
+
+- ¿La probabilidad aumenta con la altitud?
+- ¿Disminuye cuando la temperatura es muy alta?
+- ¿Existe una combinación favorable de precipitación y pH?
+:::
+
+---
+
+<br>
+
+Supongamos que observamos cientos de sitios y para cada uno conocemos su altitud, temperatura, precipitación, pH, así como si la especie estuvo presente o ausente.
+
+<br>
+
+::: {.fragment}
+La regresión logística intenta aprender una relación entre:
 
 $$
-logit(p) = X \underline{\beta}
+\text{Condiciones ambientales}
+\longrightarrow
+\mathbb{P}(\text{Presencia})
 $$
+:::
+
+---
+
+<br>
+
+La regresión logística modela la probabilidad de presencia mediante
 
 $$
-p = \frac{1}{1 + e^{-X \underline{\beta}}}
+P(Y=1\mid X)=
+\frac{e^{\eta}}
+{1+e^{\eta}}
 $$
 
-# Grafica reg log
+<br>
 
-```{R logit}
+::: {.fragment}
+donde
+
+$$
+\eta=
+\beta_0+
+\beta_1x_1+
+\beta_2x_2+
+\cdots+
+\beta_px_p
+$$
+:::
+
+<br>
+
+::: {.fragment}
+y las variables $x_1,\ldots,x_p$ representan las características ambientales del sitio.
+:::
+
+---
+
+# Interpretación ecológica
+
+<br>
+
+::: {.fragment}
+Cada coeficiente describe cómo una variable ambiental afecta la probabilidad de presencia de la especie.
+:::
+
+<br>
+
+::: {.fragment}
+Por ejemplo:
+
+- $\beta_{\text{altitud}}>0$ podría indicar preferencia por zonas altas.
+- $\beta_{\text{temperatura}}<0$ podría indicar preferencia por ambientes fríos.
+- $\beta_{\text{precipitación}}>0$ podría indicar afinidad por sitios húmedos.
+:::
+
+<br>
+
+::: {.fragment}
+De esta manera, cada especie obtiene su propia descripción estadística de su nicho ecológico.
+:::
+
+---
+
+# De variables ambientales a probabilidades
+
+::: {.columns}
+
+::: {.column width="55%"}
+
+::: {.fragment}
+La función logística transforma cualquier combinación de variables ambientales en una probabilidad entre 0 y 1.
+:::
+
+<br>
+
+::: {.fragment}
+Esto permite interpretar directamente el resultado del modelo:
+
+- Valores cercanos a 0 indican baja probabilidad de presencia.
+- Valores cercanos a 1 indican alta probabilidad de presencia.
+- Valores intermedios reflejan incertidumbre.
+:::
+
+<br>
+
+::: {.fragment}
+Por ejemplo, un sitio con gran altitud podría recibir una probabilidad alta para la presencia de *Pinus hartwegii*.
+:::
+
+:::
+
+::: {.column width="45%" }
+
+```{r logit}
 #| echo: false
 #| warning: false
 #| message: false
@@ -253,11 +381,43 @@ p <- 1/(1 + exp(-x))
 ggplot(data.frame(x, p), aes(x, p)) +
   geom_line(linewidth = 1.5) +
   labs(
-    x = "Variable ambiental",
-    y = "Probabilidad de presencia"
+    x = "Altitud",
+    y = "Probabilidad"
   ) +
   theme_minimal(base_size = 14)
 ```
+
+:::
+
+:::
+
+---
+
+# Evaluación predictiva
+
+<br>
+
+::: {.fragment}
+Una ventaja importante de este enfoque es que la variable respuesta es binaria, es decir $Y \in \{0,1\}$
+:::
+
+<br>
+
+::: {.fragment}
+Por lo tanto, las probabilidades estimadas pueden transformarse en predicciones de presencia o ausencia mediante un umbral.
+:::
+
+<br>
+
+::: {.fragment}
+Esto permite utilizar métricas de desempeño predictivo como:
+
+- Accuracy.
+- Sensibilidad.
+- Especificidad.
+- Curvas ROC.
+- AUC.
+:::
 
 
 
