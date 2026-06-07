@@ -400,8 +400,6 @@ Esto permite utilizar métricas de desempeño predictivo como:
 - AUC.
 :::
 
-# Desventajas
-
 
 
 # Enfoque 2: Ecosistema como un todo
@@ -475,43 +473,17 @@ Si tenemos disponible variables ambientales de diversos sitios.
 
 # Análisis de Componentes Principales (PCA)
 
-## Idea geométrica
+<br>
+<br>
 
-Nuestros datos son puntos en $\mathbb{R}^{3}$, sin embargo parece que las variables actuales no explican una buena proporción de la variabilidad.
+Supongamos que tenemos registros de la temperatura, humedad y precipitación para diversos sitios. Al visualizar los datos no hay una estructura clara de la variabilidad.
 
-```{R}
-#| echo: false
-#| results: asis
 
-library(plotly)
 
-set.seed(123)
-
-n <- 100
-
-altitud <- rnorm(n, 2000, 300)
-temperatura <- 30 - altitud/150 + rnorm(n, 0, 1)
-precipitacion <- altitud/2 + rnorm(n, 0, 100)
-
-p <- plot_ly(
-  x = ~altitud,
-  y = ~temperatura,
-  z = ~precipitacion,
-  type = "scatter3d",
-  mode = "markers"
-) %>%
-  layout(
-    width = 700,
-    height = 500
-  )
-
-htmltools::div(
-  style = "text-align:center;",
-  p
-)
-```
 
 ---
+
+Los datos originales:
 
 ```{R}
 #| echo: false
@@ -567,7 +539,9 @@ fig1
 ```
 
 
-# Componentes principales
+---
+
+Con la información que tengo, ¿Puedo construir nuevas variables que expliquen una mayor proporción de la varianza?
 
 ```{R}
 #| echo: false
@@ -585,19 +559,27 @@ fig2 <- plot_ly(
   mode = "markers"
 ) |>
   layout(
-    title = paste0(
-      "PCA: ",
-      round(sum(var_exp[1:2]),1),
-      "% de varianza explicada"
+    title = list(
+      text = "Visualización con PCA",
+      font = list(size = 28)
     ),
-    xaxis = list(title = "PC1"),
-    yaxis = list(title = "PC2")
+    xaxis = list(
+      title = list(
+        text = "Componente 1",
+        font = list(size = 24)
+      ),
+      tickfont = list(size = 18)
+    ),
+    yaxis = list(
+      title = list(
+        text = "Componente 2",
+        font = list(size = 24)
+      )
+    )
   )
 
 fig2
 ```
-
-
 
 
 
@@ -606,10 +588,10 @@ fig2
 El PCA construye nuevas variables a partir de combinaciones lineales de las variables disponibles, que expliquen la mayor proporción de varianza de los datos.
 
 $$
-Z_j = a_1X_1+a_2X_2+\cdots+a_pX_p
+Z_j = a_{j1}X_1+a_{j2}X_2+\cdots+a_{jp}X_p
 $$
 
-La estimación de los coeficientes $a_i$ (pesos) se realiza mediante un problema de maximización iterativo:
+La estimación de los coeficientes (pesos) se realiza mediante un problema de maximización iterativo:
 
 
 Sea
@@ -640,7 +622,7 @@ V(\mathbf{a}_i^{\top}\mathbf{x})
 \mathbf{a}_i^{\top}\Sigma \mathbf{a}_i,
 $$
 
----
+
 
 Sujeto a las restricciones
 
@@ -660,10 +642,15 @@ $$
 \qquad j=1,\ldots,i-1.
 $$
 
-::: {.fragment}
+---
+
+<br>
+
 Es decir, los componentes principales tienen correlación cero y son combinaciones lineales que reflejan la
 máxima variabilidad posible una vez considerando las componentes principales que le preceden.
-:::
+
+<br>
+<br>
 
 ::: {.fragment}
 Pero... El PCA está diseñado para variables continuas.
@@ -690,58 +677,15 @@ Supongamos que ahora tenemos información acerca de la abundancia de especies en
 | 2 | 3 | 2 | 0 | 1 |
 | 3 | 0 | 1 | 8 | 0 |
 
-
-
-
 # Análisis de Correspondencias (CA)
 
-El CA está diseñado para tablas de abundancias.
+<br>
+<br>
 
-Trabaja con la matriz de frecuencias relativas:
+El CA busca representar simultáneamente sitios y especies en un espacio de baja dimensión preservando las distancias Ji-cuadrado. Similar al PCA, construye ejes nuevos que expliquen mayor proporción de la inercia (varianza).
 
-$$
-P=\frac{N}{n}
-$$
-
-donde
-
-- \(N\) es la matriz de abundancias.
-- \(n\) es el total general.
-
----
-
-## Distancia Ji-cuadrado
-
-El CA utiliza la distancia:
-
-$$
-d(i,j)=
-\sqrt{
-\sum_k
-\frac{
-\left(
-\frac{p_{ik}}{r_i}
--
-\frac{p_{jk}}{r_j}
-\right)^2
-}
-{c_k}
-}
-$$
-
-donde
-
-- $r_i$ son masas de filas.
-- $c_k$ son masas de columnas.
-
----
-
-## Interpretación del CA
-
-El CA permite representar en un espacio de baja dimensión de forma simultanea:
-
-- Sitios
-- Especies
+<br>
+<br>
 
 ::: {.fragment}
 >Sitios cercanos poseen composiciones similares.
@@ -751,11 +695,124 @@ El CA permite representar en un espacio de baja dimensión de forma simultanea:
 >Especies cercanas tienden a aparecer juntas.
 :::
 
+
+
+
 ---
 
-## CA en R
+Sea $Y$ la  matriz de abundancias de $n$ sitios y $p$ especies.
+
+<br>
+
+::: {.fragment}
+Se trabaja con la matriz de frecuencias relativas
+
+$$
+P=\frac{Y}{N},
+$$
+
+donde $N$ es el total de observaciones.
+:::
+
+
+
+# Formulación matemática
+
+Sean
+
+$$
+r=P\mathbf{1},
+\qquad
+c=P^\top\mathbf{1},
+$$
+
+las masas de filas y columnas.
+
+La matriz de desviaciones respecto a la independencia es
+
+$$
+P-rc^\top.
+$$
+
+Estandarizando por las masas obtenemos
+
+$$
+Z=
+D_r^{-1/2}
+(P-rc^\top)
+D_c^{-1/2}.
+$$
+
+
+---
+
+<br>
+<br>
+
+
+Los ejes principales se obtienen mediante la descomposición en valores singulares
+
+<br>
+
+$$
+Z=U\Sigma V^\top.
+$$
+
+<br>
+
+Los valores singulares determinan la inercia explicada por cada dimensión.
+
+
+
+---
+
+
+Los puntajes principales de los sitios son
+
+$$
+F=D_r^{-1/2}U\Sigma.
+$$
+
+Los puntajes principales de las especies son
+
+$$
+G=D_c^{-1/2}V\Sigma.
+$$
+
+::: {.fragment}
+La inercia total está dada por
+
+$$
+I=
+\sum_k \lambda_k,
+$$
+
+donde
+
+$$
+\lambda_k=\sigma_k^2.
+$$
+
+:::
+
+::: {.fragment}
+
+- Los sitios cercanos tienen composiciones de especies similares.
+- Las especies cercanas presentan patrones de ocurrencia semejantes.
+- Cada eje representa una fuente importante de variación en la composición biológica.
+
+:::
+
+
+# CA en R
 
 ```{R}
+#| echo: false
+#| warning: false
+#| message: false
+#| out-width: 100%
+#| fig-width: 12
+#| fig-height: 8
 
 library(vegan)
 data("dune")
@@ -768,15 +825,19 @@ plot(
 )
 ```
 
+
 ---
 
-## Pero aún falta algo
+Pero aún falta algo, el CA describe solo patrones de especies.
 
-El CA describe patrones de especies.
+<br>
+<br>
 
 ::: {.fragment}
 No explica por qué aparecen esos patrones.
 :::
+
+<br>
 
 ::: {.fragment}
 Necesitamos incorporar información ambiental.
@@ -786,16 +847,38 @@ Necesitamos incorporar información ambiental.
 
 ## Análisis de Correspondencias Canónicas (CCA)
 
-El CCA combina:
 
-- La ordenación de especies obtenida por CA.
+<br>
+
+El CCA busca gradientes ambientales que expliquen las diferencias en la composición de especies entre sitios.
+
+<br>
+
+::: {.fragment}
+
+A diferencia del CA clásico, los ejes están restringidos a ser combinaciones lineales de variables ambientales.
+
+$$
+u = Xa
+$$
+
+:::
+
+
+::: {.fragment}
+Es decir, el CCA combina:
+
 - Variables ambientales explicativas.
+- Los patrones de especies obtenidos por CA.
+:::
 
----
 
-## Relación entre los métodos
 
-PCA:
+# Relación entre los métodos
+
+<br>
+
+`PCA`:
 
 $$
 \text{Ambiente}
@@ -803,7 +886,7 @@ $$
 \text{Gradientes ambientales}
 $$
 
-CA:
+`CA`:
 
 $$
 \text{Especies}
@@ -811,7 +894,7 @@ $$
 \text{Patrones de composición}
 $$
 
-CCA:
+`CCA`:
 
 $$
 \text{Ambiente y Especies}
@@ -819,53 +902,159 @@ $$
 \text{Patrones de especies explicados por ambiente}
 $$
 
----
 
-## Formulación del CCA
 
-Sea $Y$ la matriz de especies y $X$ la matriz de variables ambientales.
+# Formulación 
 
-El CCA busca ejes canónicos obtenidos al restringir la ordenación de especies a combinaciones lineales de 
+Supongamos:
+
+- $Y$: matriz de abundancias de especies.
+- $X$: matriz de variables ambientales.
+
+A partir de la matriz de frecuencias relativas,
 
 $$
-X\beta.
+P=\frac{Y}{N},
+$$
+
+se construye una medida de variación basada en la distancia Ji-cuadrado.
+
+El CCA busca vectores $a$ que maximicen
+
+$$
+\frac{
+a^\top
+X^\top D_r
+Z D_c^{-1} Z^\top
+D_r X
+a
+}{
+a^\top X^\top D_r X a
+}.
 $$
 
 ---
 
-## Interpretación ecológica
+<br>
+<br>
 
-Cada eje canónico representa un gradiente ambiental.
+Lo anterior conduce al problema de valores propios generalizados:
 
-Por ejemplo, el primer eje puede ser asociado al gradiente:
+<br> 
 
-```text
-Climas desérticos ---------------- Climas tropicales
-```
+$$
+X^\top D_r
+Z D_c^{-1}
+Z^\top D_r X a
+=
+\lambda
+X^\top D_r X a.
+$$
+
+
+
+::: {.fragment}
+
+Los valores propios $\lambda_j$ representan la cantidad de inercia explicada por cada eje canónico. Similar a la varianza explicada por cada componente en el PCA.
+
+:::
+
+
+---
+
+Los puntajes de los sitios se obtienen como
+
+$$
+u_k=Xa_k.
+$$
+
+y los puntajes de especies mediante promedios ponderados:
+
+$$
+v_k=
+\frac{1}{\sqrt{\lambda_k}}
+D_c^{-1}
+Z^\top
+D_r
+u_k.
+$$
+
+::: {.fragment}
+
+La inercia total se divide en
+
+$$
+I_{\text{total}}
+=
+I_{\text{restringida}}
++
+I_{\text{residual}}.
+$$
+
+:::
+
+::: {.fragment}
+
+- **Inercia restringida:** Explicada por las variables ambientales.
+- **Inercia residual:** No explicada.
+
+:::
+
+
+# Interpretación
+
+
+
+El CCA es un Análisis de Correspondencias restringido, donde la ordenación de especies y sitios está determinada por variables ambientales observadas.
+
+<br>
+<br>
+
+Los autovalores miden la cantidad de variación en la composición de especies explicada por dichos gradientes ambientales, mientras que los puntajes de sitios y especies permiten construir el biplot canónico.
+
+
+---
+
+Los ejes canónicos representan gradientes ambientales asociados a cambios en la composición de especies. Por ejemplo, el primer eje puede ser asociado al gradiente:
+
+
+$$
+\text{Climas desérticos}
+.............
+\text{Climas tropicales}
+$$
+
+<br>
+
 Y el segundo puede ser asociado a:
 
-```text
-Regiones costeras ---------------- Regiones de montaña
-```
+<br>
 
-Las especies se ubican según su asociación con cada gradiente.
+$$
+\text{Regiones costeras}
+.............
+\text{Regiones de montaña}
+$$
 
 
-## Mensaje final
+<br>
+<br>
+
+Entonces
+
+>Las especies se ubican según su asociación con cada gradiente.
+
+
+## Resumiendo los métodos
+
+<br>
+<br>
 
 | Método | Datos | Objetivo |
 |----------|----------|----------|
 | PCA | Variables ambientales | Encontrar gradientes ambientales |
 | CA | Matriz de especies | Encontrar patrones de composición |
 | CCA | Especies + ambiente | Explicar la composición mediante gradientes ambientales |
-
-::: {.fragment}
-El CCA puede interpretarse como una extensión del CA donde los ejes están restringidos por variables ambientales.
-:::
-
-::: {.fragment}
-Por ello es una de las herramientas más utilizadas para estudiar cómo los gradientes ambientales estructuran las comunidades ecológicas.
-:::
 
 
 # Grafica CCA
