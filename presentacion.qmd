@@ -1129,7 +1129,9 @@ Porque el CCA no está pensado para realizar predicción en nuevas observaciones
 # Ejemplo práctico: `Dune`
 
 <br>
-Usaremos el dataset `Dune.env` y `Dune` de la paquetería `vegan`, que contiene datos de abundancia de especies en 20 sitios, junto con variables ambientales como altitud, humedad y pH del suelo.
+Usaremos el dataset `Dune.env` y `Dune` de la paquetería `vegan`, que contiene datos de abundancia de 30 especies en 20 sitios, junto con variables ambientales.
+
+<br>
 
 ::: {.columns}
 
@@ -1174,7 +1176,6 @@ head(dune[,1:5],3)
 ![](imagenes/vegan.png){.absolute top=500 left=1500 width="300"}
 
 
----
 
 # `Dune.env` 
 
