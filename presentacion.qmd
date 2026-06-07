@@ -964,13 +964,13 @@ Los valores propios $\lambda_j$ representan la cantidad de inercia explicada por
 
 ---
 
-Los puntajes de los sitios se obtienen como
+Para construir el Biplot con los ejes canónicos, se obtienen las proyecciones de los sitios
 
 $$
 u_k=Xa_k.
 $$
 
-y los puntajes de especies mediante promedios ponderados:
+y las de especies mediante promedios ponderados:
 
 $$
 v_k=
@@ -1002,19 +1002,6 @@ $$
 
 :::
 
-
-# Interpretación
-
-<br>
-
-El CCA es un Análisis de Correspondencias restringido, donde la ordenación de especies y sitios está determinada por variables ambientales observadas.
-
-<br>
-<br>
-
-Los valores propios miden la cantidad de variación en la composición de especies explicada por dichos gradientes ambientales, mientras que los puntajes de sitios y especies permiten construir el biplot canónico.
-
-
 ---
 
 Los ejes canónicos representan gradientes ambientales asociados a cambios en la composición de especies. Por ejemplo, el primer eje puede ser asociado al gradiente:
@@ -1045,53 +1032,6 @@ Entonces
 
 >Las especies se ubican según su asociación con cada gradiente.
 
-
-
-
-# Ejemplo
-
-Luego de realizar mediciones en 10 sitios sobre la abundancia de 4 especies además de incluir las variables ambientales: Temperatura, humedad, pH, altitud, precipitación.
-
-```{R CCA} 
-#| echo: false
-
-
-library(vegan)
-
-especies <- data.frame(
-  Sp1 = c(12,10,11,9,8,4,3,2,1,0),
-  Sp2 = c(8,7,9,8,7,5,4,3,2,1),
-  Sp3 = c(0,1,1,2,3,6,8,10,11,12),
-  Sp4 = c(1,2,1,2,3,5,6,8,9,10)
-)
-
-rownames(especies) <- paste0("Sitio_", 1:10)
-
-
-ambiente <- data.frame(
-  Temperatura = c(15,16,17,18,19,20,21,22,23,24),
-  Humedad     = c(90,88,85,82,80,75,70,68,65,60),
-  pH          = c(5.5,5.7,5.8,6.0,6.2,6.5,6.7,6.8,7.0,7.2),
-  Altitud     = c(2200,2100,2050,1950,1900,1800,1700,1650,1600,1500),
-  Precipitacion   = c(95,90,88,85,80,75,70,65,60,55)
-)
-
-rownames(ambiente) <- rownames(especies)
-
-modelo_cca <- cca(
-  especies ~ Temperatura + Humedad + pH + Altitud + Precipitacion,
-  data = ambiente
-)
-
-# Biplot
-
-plot(
-  modelo_cca,
-  scaling = 2,
-  main = "CCA: Especies y variables ambientales"
-)
-
-``` 
 
 
 # Regresando al problema
@@ -1226,7 +1166,7 @@ especies_bi <- decostand(especies, method = "pa") # pa: scale x to presence/abse
 <br>
 
 
-Para fines prácticos, se escogieron solo 6 especies del conjunto `Dune`, y a cada una se le ajustó una regresión logística mediante selección de variables stepwise forward. Posteriormente para la evaluación del poder predictivo de cada modelo, se realizó una partición en conjuntos `train` y `test` con proporción 80%-20%. Para construir al conjunto `train` se realizó un muestro aleatorio simple sin remplazo.
+Para fines prácticos, se escogieron solo 6 especies del conjunto `Dune`, y a cada una se le ajustó una regresión logística mediante selección de variables stepwise backward. Posteriormente para la evaluación del poder predictivo de cada modelo, se realizó una partición en conjuntos `train` y `test` con proporción 80%-20%. Para construir al conjunto `train` se realizó un muestro aleatorio simple sin remplazo.
 
 
 ```{R RL}
@@ -1331,14 +1271,15 @@ resultados_eval %>%
 
 # `CCA`
 
-Consideracion en para usar CCA en prediccion. Similar al paper
+En un modelo CCA, se puede proyectar un sitio según la información disponible sobre él: Variables ambientales o abundancia de especies. 
 
+<br>
 
-
----
+Aquí se muestra la proyección de 3 sitios de ambas formas, según las características ambientales (rojo) y según la abundancia de especies (azul).
 
 ```{R entrenamiento}
 #| echo: false
+#| fig-align: center
 
 set.seed(123)
 
@@ -1374,8 +1315,7 @@ p + geom_text(data = sit_train_df,aes(x = CCA1, y = CCA2, label = sitio),colour 
   geom_text(data = sit_test_obs_df,aes(x = CCA1, y = CCA2, label=sitio),colour = "steelblue",) +
   geom_text(data = sit_test_pred_df,aes(x = CCA1, y = CCA2, label = sitio),colour = "darkred",) +
   geom_segment(data = cbind(sit_test_obs_df,xend = sit_test_pred_df$CCA1, yend = sit_test_pred_df$CCA2),
-     aes(x = CCA1,y = CCA2,xend = xend,yend = yend),colour = "darkgreen",linetype = 2) +
-  labs(title = "CCA predicciones")
+     aes(x = CCA1,y = CCA2,xend = xend,yend = yend),colour = "darkgreen",linetype = 2) 
 ```
 
 
@@ -1389,6 +1329,19 @@ mod_Salirepe <- glm(especies_bi[, "Salirepe"] ~ A1 + Moisture + Use,data = ambie
 #Ranuflam	especies_bi[, espe] ~ A1 + Moisture
 mod_Ranuflam <- glm(especies_bi[, "Ranuflam"] ~ A1 + Moisture,data = ambientales,family = binomial)
 ```
+
+
+# `¿CCA para predicción?`
+
+<br>
+
+`Guisan, Weiss y Weiss (1999)` proponen que una vez ajustado el modelo CCA, las variables ambientales de un `nuevo sitio` pueden proyectarse sobre los ejes canónicos obtenidos durante el entrenamiento. 
+
+<br>
+
+Posteriormente, la posición del sitio se compara con la de el centroide de cada especie, y si esa distancia rebasa un umbral establecido, se clasifica como ausencia de la especie en el sitio.
+
+Para fines de esta presentación, únicamente nos quedaremos con una visualización del sitio nuevo en los ejes canónicos.
 
 
 ---
@@ -1421,14 +1374,7 @@ modelos <- list(
   Ranuflam = mod_Ranuflam
 )
 
-sitio1 <- data.frame(
-  probabilidad = sapply(
-    modelos,
-    predict,
-    newdata = sitio_nuevo1,
-    type = "response"
-  )
-)
+sitio1 <- data.frame(Presencia = sapply(modelos,predict,newdata = sitio_nuevo1,type = "response"))
 
 sitio1 |>
   tibble::rownames_to_column("Especie") |>
@@ -1493,8 +1439,8 @@ autoplot(
       x = nuevo[1],
       y = nuevo[2]
     ),
-    colour = "red",
-    size = 3) 
+    colour = "#556B2F",
+    size = 5) 
 
 ```
 
@@ -1506,68 +1452,14 @@ autoplot(
 
 ---
 
-```{R ejemplo2}
-#| echo: false
+`Guisan, Weiss y Weiss (1999)` concluyen que la elección de cada enfoque (especie por especie o al ecosistema completo) depende de contextos ecológicos específicos, como interés en una especie endémica o en ecosistemas complejos.
 
-# caracteristicas de un lugar nuevo para identificar que especies podrían estar en un sitio con espesor medio de materia organica en suelo; área de conservación natural; y alto indice de humedad
-nuevo<-predict(cca_2, type="lc", new=data.frame(A1 = 5, Management="NM", Moisture="4"), scal=2)
+<br>
 
-sitios <- scores(cca_2,display = "sites",scaling = 2)%>% as.data.frame()
-sitios$sitio <- rownames(sitios)
+Luego de realizar el análisis presentado, nos parece un enfoque más completo utilizar ambas herramientas de forma complementaria, más que como métodos competitivos.
 
-autoplot(cca_2,layers = c("species","biplot"),scaling = 2)+ 
-  geom_text(data = sitios,aes(x = CCA1, y = CCA2, label = sitio),colour = "black") +
-  geom_point(aes(x = nuevo[1], y = nuevo[2]),colour = "red",size = 2)
+El CCA permitió comprender la estrcutura general del ecosistema y las relaciones entre sitios y especies considerando los gradientes ambientales; mientras que la Regresión Logística facilitó el análisis detallado de especies de manera individual para la evaluación de su presencia o ausencia. 
+ 
+<br>
 
-
-# caracteristicas de un lugar nuevo para calcular la probabilidad de presencia de la especie:
-sitio_nuevo2<-data.frame(A1 = 5,Moisture="4", Management = "NM" , Use="Hayfield")
-
-
-modelos <- list(Achimill = mod_Achimill,Salirepe = mod_Salirepe,Ranuflam = mod_Ranuflam)
-sitio1<-data.frame(probabilidad = sapply(modelos,predict,newdata = sitio_nuevo2,type = "response"))
-sitio1 %>%
-  kbl(digits = 5,caption = "Probabilidad de presencia en el sitio: A1 = 5,Moisture=4, Management = NM , Use=Hayfield",align = "c")  %>%
-  kable_styling(latex_options = c("HOLD_position", "scale_down"), position = "center")
-
-
-
-```
-
-
----
-
-
-```{R Ejemplo3}
-#| echo: false
-
-# caracteristicas de un lugar nuevo para identificar que especies podrían estar en sitios con mucho espesor de materia organica, agricultura sostenible y alto indice de humedad
-nuevo<-predict(cca_2, type="lc", new=data.frame(A1 = 9, Management="BF", Moisture="4"), scal=2)
-
-sitios <- scores(cca_2,display = "sites",scaling = 2)%>% as.data.frame()
-sitios$sitio <- rownames(sitios)
-
-autoplot(cca_2,layers = c("species","biplot"),scaling = 2)+ 
-  geom_text(data = sitios,aes(x = CCA1, y = CCA2, label = sitio),colour = "black") +
-  geom_point(aes(x = nuevo[1], y = nuevo[2]),colour = "red",size = 2)
-
-
-
-# caracteristicas de un lugar nuevo para calcular la probabilidad de presencia de la especie:
-sitio_nuevo3<-data.frame(A1 = 9,Moisture="4", Management = "BF" , Use="Hayfield")
-
-
-modelos <- list(Achimill = mod_Achimill,Salirepe = mod_Salirepe,Ranuflam = mod_Ranuflam)
-sitio1<-data.frame(probabilidad = sapply(modelos,predict,newdata = sitio_nuevo3,type = "response"))
-sitio1 %>%
-  kbl(digits = 5,caption = "Probabilidad de presencia en el sitio: A1 = 5,Moisture=4, Management = NM , Use=Hayfield",align = "c")  %>%
-  kable_styling(latex_options = c("HOLD_position", "scale_down"), position = "center")
-
-
-
-```
-
-# Conclusion
-
-Siguiendo a [], conviene usar un enfoque cuando...
-
+ Por ello, la estrategia que nos pareció más adecuada fue utilizar el CCA para explorar los patrones ecológicos de la comunidad y posteriormente aplicar RL a especies de interés para realizar análisis más específicos y confirmatorios.
