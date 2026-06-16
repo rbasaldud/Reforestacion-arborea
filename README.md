@@ -9,5 +9,5 @@ Autores:
 - Seani Noemi Rodríguez Gomez
 
 
-[Enlace a la presentación](https://smsepiol.github.io/Video-Modelos-Lineales/#/)
+[Enlace a la presentación](https://rbasaldud.github.io/Video-Modelos-Lineales/)
 
