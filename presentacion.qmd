@@ -31,12 +31,10 @@ Una comparativa entre la `regresión logística` y `CCA`
 <br>
 <br>
 
-<h3>Autores</h3>
+<h3>Autor</h3>
 
 <ul style="font-size: 1.2em;">
   <li>Rodrigo Basaldud</li>
-  <li>Brenda Ramirez</li>
-  <li>Seani Rodríguez</li>
 </ul>
 
 <br>
